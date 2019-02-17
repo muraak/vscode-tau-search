@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   viewBox="0 0 128 128"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="tau-search-icon.svg"
+   inkscape:export-filename="/Users/muraak/MyGarage/vscode/vscode-rg/resource/icon.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6138">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop6140" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop6142" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4540">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop4528" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop4530" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4540"
+       id="radialGradient4532"
+       cx="3.9182086"
+       cy="2.4741795"
+       fx="3.9182086"
+       fy="2.4741795"
+       r="1.1400548"
+       gradientTransform="matrix(1,0,0,0.97959197,0,0.05049312)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6138"
+       id="radialGradient6144"
+       cx="3.9182087"
+       cy="2.4741793"
+       fx="3.9182087"
+       fy="2.4741793"
+       r="1.297233"
+       gradientTransform="matrix(1,0,0,0.9820646,0,0.04437538)"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter7302"
+       x="-0.28032325"
+       width="1.5606465"
+       y="-0.28626247"
+       height="1.5725249">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.26196361"
+         id="feGaussianBlur7304" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2"
+     inkscape:cx="20.700466"
+     inkscape:cy="53.936278"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1366"
+     inkscape:window-height="655"
+     inkscape:window-x="37"
+     inkscape:window-y="14"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="basement"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-924.36216)"
+     style="display:inline">
+    <circle
+       style="opacity:1;fill:#001520;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:8.03316021;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path4136"
+       cx="64"
+       cy="988.36218"
+       r="64"
+       inkscape:export-filename="/Users/muraak/MyGarage/vscode/vscode-rg/resource/text4838.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+  <g
+     style="fill:none"
+     id="g6355"
+     transform="matrix(3.0514514,0,0,3.0514514,13.924103,29.130611)"
+     inkscape:export-filename="/Users/muraak/MyGarage/vscode/vscode-rg/resource/text4838.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <path
+       id="path6344"
+       d="m 17.1249,2 c -4.9127,0 -8.89701,3.98533 -8.89701,8.899 0,1.807 0.54686,3.4801 1.47014,4.8853 0,0 -5.562,5.5346 -7.20564,7.2056 -1.644662,1.6701 1.0156,4.1304 2.63997,2.4442 1.62538,-1.6832 7.10824,-7.1072 7.10824,-7.1072 1.4042,0.9243 3.0793,1.4711 4.8843,1.4711 4.9157,0 8.9,-3.9873 8.9,-8.899 C 26.0259,5.98431 22.0406,2 17.1249,2 Z m 0,15.2544 c -3.5095,0 -6.3565,-2.8449 -6.3565,-6.3554 0,-3.51049 2.846,-6.35643 6.3565,-6.35643 3.5125,0 6.3574,2.84493 6.3574,6.35643 0,3.5105 -2.8449,6.3554 -6.3574,6.3554 z"
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff" />
+  </g>
+  <g
+     id="g6403"
+     transform="matrix(0.26458333,0,0,0.26458333,148.55879,-108.75203)">
+    <rect
+       id="rect6389"
+       x="7"
+       y="3"
+       width="3"
+       height="11"
+       style="fill:#f60000;fill-opacity:0" />
+    <rect
+       id="rect6391"
+       x="3"
+       y="7"
+       width="11"
+       height="3"
+       style="fill:#f60000;fill-opacity:0" />
+  </g>
+  <g
+     id="g4970"
+     style="font-style:normal;font-weight:normal;font-size:4.37578344px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:1;fill:#63e6ff;fill-opacity:1;stroke:#63e7ff;stroke-width:0.24427585;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter7302)"
+     transform="matrix(10.247969,0,0,10.965699,24.591222,38.346096)"
+     aria-label="R"
+     inkscape:export-filename="/Users/muraak/MyGarage/vscode/vscode-rg/resource/text4838.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <text
+       transform="scale(1.0344257,0.96671999)"
+       id="text4972"
+       y="3.6459103"
+       x="2.6889079"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:1.25;font-family:STIXGeneral;-inkscape-font-specification:STIXGeneral;letter-spacing:0px;word-spacing:0px;fill:#63e6ff;fill-opacity:1;stroke:#63e7ff;stroke-width:0.24427585;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       xml:space="preserve"><tspan
+         style="fill:#63e6ff;fill-opacity:1;stroke:#63e7ff;stroke-width:0.24427585;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         y="3.6459103"
+         x="2.6889079"
+         id="tspan4974"
+         sodipodi:role="line">τ</tspan></text>
+  </g>
+  <g
+     aria-label="R"
+     transform="matrix(11.962284,0,0,12.80008,17.484621,34.014762)"
+     style="font-style:normal;font-weight:normal;font-size:4.37578344px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:1;fill:#f6f6f6;fill-opacity:1;stroke:none;stroke-width:0.10955187;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="text4838"
+     inkscape:export-filename="/Users/muraak/MyGarage/vscode/vscode-rg/resource/text4838.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:1.25;font-family:STIXGeneral;-inkscape-font-specification:STIXGeneral;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.10955187;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="2.6889079"
+       y="3.6459103"
+       id="text1165"
+       transform="scale(1.0344257,0.96671999)"><tspan
+         sodipodi:role="line"
+         id="tspan4484"
+         x="2.6889079"
+         y="3.6459103"
+         style="stroke:none;stroke-width:0.10955187;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">τ</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,139 @@
+{
+    "name": "vscode-tau-search",
+    "displayName": "Tau Search",
+    "description": "Improve searching on vscode.",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/muraak/vscode-tau-search"
+    },
+    "icon": "resource/icon.png",
+    "publisher": "muraak",
+    "engines": {
+        "vscode": "^1.30.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "tau-search-result",
+                    "title": "Tau Search Results",
+                    "icon": "resource/tau-search-view.svg"
+                }
+            ]
+        },
+        "views": {
+            "tau-search-result": [
+                {
+                    "id": "searchResult",
+                    "name": "Search Result"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "tau.test",
+                "title": "Tau: Test"
+            },
+            {
+                "command": "tau.quickSearch",
+                "title": "Tau: Quick Search"
+            },
+            {
+                "command": "tau.detailSearch",
+                "title": "Tau: Detail Search"
+            },
+            {
+                "command": "searchResult.deleteNode",
+                "title": "Delete"
+            },
+            {
+                "command": "searchResult.renameNode",
+                "title": "Rename"
+            },
+            {
+                "command": "tau.moveToNext",
+                "title": "Tau: Move to next result(for tree view)"
+            },
+            {
+                "command": "tau.moveToPrevious",
+                "title": "Tau: Move to previous result(for tree view)"
+            }
+        ],
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "searchResult.deleteNode",
+                    "when": "view == searchResult"
+                },
+                {
+                    "command": "searchResult.renameNode",
+                    "when": "view == searchResult && viewItem != file"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Tau Search Configurations",
+            "properties": {
+                "tau.enableFileViewMode": {
+                    "scope": "resource",
+                    "type": "boolean",
+                    "default": true
+                },
+                "tau.enableTreeViewMode": {
+                    "scope": "resource",
+                    "type": "boolean",
+                    "default": true
+                },
+                "tau.search.encoding": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": "utf-8"
+                },
+                "tau.search.default.globe": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": ""
+                },
+                "tau.search.default.raw": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": ""
+                },
+                "tau.outfile.encoding": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": "utf-8"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^7.0.70",
+        "tslint": "^5.8.0",
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.29"
+    },
+    "dependencies": {
+        "date-utils": "^1.2.21",
+        "iconv-lite": "^0.4.24",
+        "moment": "^2.22.2",
+        "vscode-uri": "^1.0.6"
+    }
+}

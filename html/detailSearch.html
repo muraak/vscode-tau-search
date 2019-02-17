@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rg Detail Search</title>
+</head>
+
+<body>
+    <div style="margin-left:30px;margin-top: 30px;">
+        <table>
+            <tr>
+                <td>search word:</td>
+            </tr>
+            <tr>
+                <td><input type="text" id="sword" style="width:200px; height: 20px;"></td>
+            <tr>
+                <td>include or exclude files or folders:<br/>i.e.) *.c, *.h, !*.o, src/, !bin/</td>
+            </tr>
+            <tr>
+                <td><input type="text" id="globe" style="width:200px; height: 20px;"></td>
+            </tr>
+            <tr>
+                <td>
+                    <details>
+                        <summary>Set options manualy:</summary>
+                        <textarea id="raw" style="width: 200%; height: 100px;"></textarea>
+                    </details>
+                </td>
+            </tr>
+            <tr>
+                <td><br/><button id="sbt" type="button" style="width:60px;height: 24px;">Search</button></td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        (function () {
+            const vscode = acquireVsCodeApi();
+            const sword = document.getElementById('sword');
+            const globe = document.getElementById('globe');
+            const raw   = document.getElementById('raw');
+
+            document.getElementById('sbt').onclick = function()
+            {
+                vscode.postMessage({
+                    command: "detailSearch",
+                    sword: sword.value,
+                    globe: globe.value,
+                    raw: raw.value
+                });
+            };
+        }())
+    </script>
+</body>
+
+</html>
