@@ -180,101 +180,128 @@ function isString(x: any): x is string {
 
 function execRgCommand(input: string, options?: string[]) {
 
-	let tmp_file_name = getTmpFileName(input);
-	let search_id = getSearchId(input);
-	let file_path = path.join(tmpdir(), tmp_file_name);
-	let file_uri = Uri.file(file_path);
+	const enableFileViewMode = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableFileViewMode");
+	const enableTreeViewMode = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableTreeViewMode");
 
-	appendFile(file_path, "", err => {
-		if (!err) {
+	if(enableFileViewMode === false && enableTreeViewMode === false) {
+		vscode.window.showInformationMessage("Both of view mode is disabled.\nEnable either or both of them from configuration.");
+		return;
+	}
+	
+	const search_id = getSearchId(input);
+	const tmp_file_name = getTmpFileName(input);
+	const file_path = path.join(tmpdir(), tmp_file_name);
+	const file_uri = Uri.file(file_path);
+	
+	if(enableFileViewMode === true) {
+		try {
+			fs.appendFileSync(file_path, "");
+		}
+		catch (e) {
+			vscode.window.showErrorMessage(e.message);
+			return;
+		}
 
-			// add to internal manage array
-			genarated_tmp_files.push(file_path);
+		// add to internal manage array
+		genarated_tmp_files.push(file_path);
 
-			// add tree to search result
-			searchResultProvider.add(search_id);
-			// show search result view
-			commands.executeCommand("workbench.view.extension.tau-search-result");
+		// show result file
+		workspace.openTextDocument(file_uri).then(document => {
+			window.showTextDocument(document);
+		});
+	}
 
-			workspace.openTextDocument(file_uri).then(document => {
-				window.showTextDocument(document).then(() => {
+	if(enableTreeViewMode === true) {
+		// add tree to search result
+		searchResultProvider.add(search_id);
+		// show search result view
+		commands.executeCommand("workbench.view.extension.tau-search-result");
+	}
 
-					if (workspace.workspaceFolders) {
-						let dir_path: string = workspace.workspaceFolders[0].uri.fsPath;
-						let args = ["--line-number", input, dir_path, "-E " + getSearchEncoding()];
-						if (options) {
-							args = args.concat(options);
-						}
+	if (workspace.workspaceFolders) {
+		let dir_path: string = workspace.workspaceFolders[0].uri.fsPath;
+		let args = ["--line-number", input, dir_path, "-E " + getSearchEncoding()];
+		if (options) {
+			args = args.concat(options);
+		}
 
-						let proc = child_process.spawn("rg", args, { shell: true, cwd: path.dirname(rg_path) });
-						proc.stdout.setEncoding("utf-8");
+		let proc = child_process.spawn("rg", args, { shell: true, cwd: path.dirname(rg_path) });
+		proc.stdout.setEncoding("utf-8");
 
-						let icon = window.createStatusBarItem(StatusBarAlignment.Right);
-						icon.color = "yellow";
-						icon.text = "$(pulse)tau searching...";
-						icon.show();
+		// Reveal status bar icon while searching.
+		let icon = window.createStatusBarItem(StatusBarAlignment.Right);
+		icon.color = "yellow";
+		icon.text = "$(pulse)tau searching...";
+		icon.show();
 
-						let error :any = undefined;
-						proc.stdout.on('data', (data) => {
+		// Register procedures on recive output from ripgrep.
+		let error :any = undefined;
+		proc.stdout.on('data', (data) => {
 
-							// STD OUT
-							data = data.toString(); // buf -> string
+			// STD OUT
+			data = data.toString(); // buf -> string
 
-							if (!error) {
-								try {
-									// update tree
-									// We don't convert abs path  to rel path here 
-									// because tree should know abs path of result for jumping. 
-									searchResultProvider.update(search_id, data);
-								} catch (e) {
-									window.showErrorMessage(e.toString());
-									error = e;
-									searchResultProvider.refresh();
-								}
-							}
+			if (enableTreeViewMode === true && error === undefined) {
+				try {
+					// update tree
+					// We don't convert abs path  to rel path here 
+					// because tree should know abs path of result for jumping. 
+					searchResultProvider.update(search_id, data);
+				} catch (e) {
+					window.showErrorMessage(e.toString());
+					error = e;
+					searchResultProvider.refresh();
+				}
+			}
 
-							// convert absolute path to that of relative if necessary.
-							// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
-							// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
-							// }
-
-							appendFile(file_path, data, err => {
-								if (err) {
-									window.showErrorMessage(err.message);
-								}
-							});
-						});
-
-						proc.stderr.on('data', (data) => {
-
-							// STD ERROR
-							data = data.toString(); // buf -> string
-
-							// update tree
-							// We don't convert abs path to rel path here 
-							// because tree should know abs path of result for jumping. 
-							searchResultProvider.update(search_id, data);
-
-							// convert absolute path to that of relative if necessary.
-							// if (workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
-							// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
-							// }
-
-							appendFile(file_path, data, err => {
-								if (err) {
-									window.showErrorMessage(err.message);
-								}
-							});
-						});
-
-						proc.on("exit", () =>{
-							icon.dispose();
-						});
+			if (enableFileViewMode === true) {
+				// convert absolute path to that of relative if necessary.
+				// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
+				// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
+				// }
+				appendFile(file_path, data, err => {
+					if (err) {
+						window.showErrorMessage(err.message);
 					}
 				});
-			});
-		}
-	});
+			}
+		});
+
+		proc.stderr.on('data', (data) => {
+	
+			// STD ERROR
+			data = data.toString(); // buf -> string
+
+			if (enableTreeViewMode === true && error === undefined) {
+				try {
+					// update tree
+					// We don't convert abs path  to rel path here 
+					// because tree should know abs path of result for jumping. 
+					searchResultProvider.update(search_id, data);
+				} catch (e) {
+					window.showErrorMessage(e.toString());
+					error = e;
+					searchResultProvider.refresh();
+				}
+			}
+
+			if (enableFileViewMode === true) {
+				// convert absolute path to that of relative if necessary.
+				// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
+				// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
+				// }
+				appendFile(file_path, data, err => {
+					if (err) {
+						window.showErrorMessage(err.message);
+					}
+				});
+			}
+		});
+
+		proc.on("exit", () =>{
+			icon.dispose();
+		});
+	}
 }
 
 function getTmpFileName(sword: string): string {
