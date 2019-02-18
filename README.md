@@ -35,7 +35,7 @@ You can use Tree View Mode and File View Mode:
     You can set other options for Quick Search manually same as [ripgrep commandline option's format](https://www.mankier.com/1/rg).
 
 ## Tips
-- You shold set following configuration to avoid overwriting search result tab by another one(File View Mode only).<br/>
+- In File View Mode, You shold set following configuration to avoid overwriting search result tab by another one.<br/>
 
 ```
  "workbench.editor.enablePreview": false

@@ -182,6 +182,7 @@ function execRgCommand(input: string, options?: string[]) {
 
 	const enableFileViewMode = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableFileViewMode");
 	const enableTreeViewMode = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableTreeViewMode");
+	const outfileEncoding = vscode.workspace.getConfiguration("tau", null).get<string>("outfile.encoding");
 
 	if(enableFileViewMode === false && enableTreeViewMode === false) {
 		vscode.window.showInformationMessage("Both of view mode is disabled.\nEnable either or both of them from configuration.");
@@ -259,7 +260,7 @@ function execRgCommand(input: string, options?: string[]) {
 				// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
 				// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
 				// }
-				appendFile(file_path, data, err => {
+				appendFile(file_path, iconv.encode(data, outfileEncoding!), err => {
 					if (err) {
 						window.showErrorMessage(err.message);
 					}
@@ -290,7 +291,7 @@ function execRgCommand(input: string, options?: string[]) {
 				// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
 				// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
 				// }
-				appendFile(file_path, data, err => {
+				appendFile(file_path, iconv.encode(data, outfileEncoding!), err => {
 					if (err) {
 						window.showErrorMessage(err.message);
 					}
