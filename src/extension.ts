@@ -57,10 +57,10 @@ export function activate(context: ExtensionContext) {
 		// searchResultProvider.foldNodesAtSameLevel(node.contextValue, node.search_id);
 	// }));
 
-	context.subscriptions.push(commands.registerCommand('searchResult.deleteNode', (node) => { 
+	context.subscriptions.push(commands.registerCommand('tau.searchResult.deleteNode', (node) => { 
 		searchResultProvider.deleteNode(node);
 	}));
-	context.subscriptions.push(commands.registerCommand('searchResult.renameNode', (node) => { 
+	context.subscriptions.push(commands.registerCommand('tau.searchResult.renameNode', (node) => { 
 		window.showInputBox({prompt: "input the new name."}).then((value) => {
 			if(node.contextValue !== 'file') {
 				if(value) {
@@ -129,6 +129,9 @@ async function tauTest() {
 async function tauQuickSearch() {
 	const result = await window.showInputBox({
 		prompt: 'input the search word.',
+		// current selection text
+		value: window.activeTextEditor!.document.getText(
+			new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end))
 	});
 
 	if (result) {
@@ -332,7 +335,27 @@ function showDetailSearchWebView(context: ExtensionContext) {
 		// create and show webview panel
 		wv_panel = window.createWebviewPanel(
 			"tauDetailSearch", "Tau Detail Search", ViewColumn.Beside, { enableScripts: true });
-		wv_panel.webview.html = getDetailSearchViewHtml(context);
+		
+		// bind variables to html elements
+		const cheerio = require('cheerio');
+		let $ = cheerio.load(getDetailSearchViewHtml(context));
+		// bind current selection text
+		const active_txt_editor = window.activeTextEditor;
+		
+		if(active_txt_editor) {
+			const select_txt = active_txt_editor.document.getText(
+								new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
+			
+			$("#sword").val(select_txt?select_txt:"");
+		}
+		// bind globe option
+		$("#globe").val(workspace.getConfiguration("tau", null).get<string>("search.default.globe"));
+		// bind raw option
+		$("#raw").val(workspace.getConfiguration("tau", null).get<string>("search.default.raw"));
+
+		
+		// set html to webview
+		wv_panel.webview.html =$.html();
 
 		// Handle messages from the webview
 		wv_panel.webview.onDidReceiveMessage(message => {
