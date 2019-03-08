@@ -130,6 +130,7 @@ async function tauTest() {
 
 async function tauQuickSearch() {
 
+	// set up quickPick
 	let qp = window.createQuickPick();
 	qp.items = genarated_tmp_files.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
 	// set current selection text as initial value
@@ -162,6 +163,7 @@ async function tauQuickSearch() {
 		}
 	});
 
+	// reveal quickPick for quickSearch
 	qp.show();
 }
 
