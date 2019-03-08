@@ -14,7 +14,7 @@ import * as iconv from 'iconv-lite';
 import { SearchResultProvider, SearchResultTreeItem } from "./resultTree";
 
 
-let genarated_tmp_files: string[] = [];
+let genarated_tmp_files: {reesult_file_path: string, search_id: string}[] = [];
 let searchResultProvider = new SearchResultProvider();
 let treeView : vscode.TreeView<SearchResultTreeItem>;
 
@@ -40,6 +40,8 @@ export function activate(context: ExtensionContext) {
 			}
 		}
 	}));
+
+
 
 	context.subscriptions.push(commands.registerCommand('tau.moveToPrevious', () => {
 		if (treeView !== undefined && treeView.selection.length > 0) {
@@ -104,7 +106,7 @@ export function deactivate() {
 
 	// remove tmp files
 	genarated_tmp_files.forEach(element => {
-		unlink(element, () => { });
+		unlink(element.reesult_file_path, () => { });
 	});
 
 	// clear
@@ -123,24 +125,44 @@ async function tauTest() {
 			if (stderr) {
 				window.showErrorMessage(iconv.decode(stderr, getSearchEncoding()));
 			}
-		});
+		});	
 }
 
 async function tauQuickSearch() {
-	const result = await window.showInputBox({
-		prompt: 'input the search word.',
-		// current selection text
-		value: window.activeTextEditor!.document.getText(
-			new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end))
+
+	let qp = window.createQuickPick();
+	qp.items = genarated_tmp_files.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
+	// set current selection text as initial value
+	qp.value =  window.activeTextEditor!.document.getText(
+					new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
+	qp.onDidChangeValue((value) =>{
+		qp.items = [{label: value, description: ":current input"}].concat(genarated_tmp_files.map((value) => { 
+			return {label: value.search_id, description: ":history", alwaysShow: true};
+		}));
+	});
+	qp.onDidAccept(() =>{
+		if(qp.selectedItems[0].description === ":history") {
+			// show result file that is already exists
+			let tgt_file = genarated_tmp_files.find((value) => { return qp.selectedItems[0].label === value.search_id;});
+			if(tgt_file) {
+				workspace.openTextDocument(Uri.file(tgt_file.reesult_file_path)).then(document => {
+					window.showTextDocument(document);
+				});
+			}
+			qp.dispose();
+		}
+		else {
+			// execute search by ripgrep
+			tauDetailSearch({
+				sword: qp.value,
+				globe: workspace.getConfiguration("tau", null).get<string>("search.default.globe"),
+				raw: workspace.getConfiguration("tau", null).get<string>("quick.default.raw")
+			});
+			qp.dispose();
+		}
 	});
 
-	if (result) {
-		tauDetailSearch({
-			sword: result,
-			globe: workspace.getConfiguration("tau", null).get<string>("search.default.globe"),
-			raw: workspace.getConfiguration("tau", null).get<string>("quick.default.raw")
-		});
-	}
+	qp.show();
 }
 
 function tauDetailSearch(options_obj: any) {
@@ -207,7 +229,7 @@ function execRgCommand(input: string, options?: string[]) {
 		}
 
 		// add to internal manage array
-		genarated_tmp_files.push(file_path);
+		genarated_tmp_files.push({reesult_file_path: file_path, search_id: search_id});
 
 		// show result file
 		workspace.openTextDocument(file_uri).then(document => {
