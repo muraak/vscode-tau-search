@@ -106,6 +106,19 @@ export class SearchResultProvider implements vscode.TreeDataProvider<SearchResul
     public getPreviousResult(item :SearchResultTreeItem) {
         return this.searchResultTree.getPreviousResult(item);
     }
+
+    public getRoot(search_id :string) {
+        return this.searchResultTree.roots.find((value) => {return value.search_id === search_id;});
+    }
+
+    public isExistInRoots(search_id :string) {
+        if(this.getRoot(search_id)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
 
 export class SearchResultTree {

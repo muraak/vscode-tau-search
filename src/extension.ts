@@ -11,7 +11,7 @@ import { appendFile, unlink } from 'fs';
 import * as Moment from 'moment';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
-import { SearchResultProvider, SearchResultTreeItem } from "./resultTree";
+import { SearchResultProvider, SearchResultTreeItem, SearchResultTree } from "./resultTree";
 
 
 let genarated_tmp_files: {reesult_file_path: string, search_id: string}[] = [];
@@ -132,7 +132,11 @@ async function tauQuickSearch() {
 
 	// set up quickPick
 	let qp = window.createQuickPick();
-	qp.items = genarated_tmp_files.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
+	qp.items = genarated_tmp_files
+		.filter((value)=>{ 
+			return fs.existsSync(value.reesult_file_path) && (!isEnabletTreeViewMode() || searchResultProvider.isExistInRoots(value.search_id));
+		 })
+		.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
 	// set current selection text as initial value
 	qp.value =  window.activeTextEditor!.document.getText(
 					new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
@@ -143,13 +147,8 @@ async function tauQuickSearch() {
 	});
 	qp.onDidAccept(() =>{
 		if(qp.selectedItems[0].description === ":history") {
-			// show result file that is already exists
-			let tgt_file = genarated_tmp_files.find((value) => { return qp.selectedItems[0].label === value.search_id;});
-			if(tgt_file) {
-				workspace.openTextDocument(Uri.file(tgt_file.reesult_file_path)).then(document => {
-					window.showTextDocument(document);
-				});
-			}
+			// show result file that is already exist.
+			showHistory(qp.selectedItems[0].label);
 			qp.dispose();
 		}
 		else {
@@ -165,6 +164,35 @@ async function tauQuickSearch() {
 
 	// reveal quickPick for quickSearch
 	qp.show();
+}
+
+function showHistory(search_id: string) :boolean {
+
+	let succeed = true;
+
+	if (isEnableFileViewMode()) {
+		let tgt_file = genarated_tmp_files.find((value) => { return search_id === value.search_id; });
+		if (tgt_file) {
+			workspace.openTextDocument(Uri.file(tgt_file.reesult_file_path)).then(document => {
+				window.showTextDocument(document);
+			});
+		}
+		else {
+			window.showInformationMessage(`Search result "${search_id}" was already removed. Please search again.`);
+		}
+	}
+
+	if(isEnabletTreeViewMode()) {
+		let tgt_root = searchResultProvider.getRoot(search_id);
+		if(tgt_root) {
+			treeView.reveal(tgt_root, {select: true, focus: true});
+		}
+		else {
+			window.showInformationMessage(`Search result "${search_id}" was already removed from TreeView. Please search again.`);
+		}
+	}
+
+	return succeed;
 }
 
 function tauDetailSearch(options_obj: any) {
@@ -205,23 +233,31 @@ function isString(x: any): x is string {
 	return typeof x === "string";
 }
 
+function isEnableFileViewMode(): Boolean {
+	const result = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableFileViewMode");
+	return result ? result : false;
+}
+
+function isEnabletTreeViewMode(): Boolean {
+	const result = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableTreeViewMode");
+	return result ? result : false;
+}
+
 function execRgCommand(input: string, options?: string[]) {
 
-	const enableFileViewMode = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableFileViewMode");
-	const enableTreeViewMode = vscode.workspace.getConfiguration("tau", null).get<Boolean>("enableTreeViewMode");
 	const outfileEncoding = vscode.workspace.getConfiguration("tau", null).get<string>("outfile.encoding");
 
-	if(enableFileViewMode === false && enableTreeViewMode === false) {
+	if (isEnableFileViewMode() === false && isEnabletTreeViewMode() === false) {
 		vscode.window.showInformationMessage("Both of view mode is disabled.\nEnable either or both of them from configuration.");
 		return;
 	}
-	
+
 	const search_id = getSearchId(input);
 	const tmp_file_name = getTmpFileName(input);
 	const file_path = path.join(tmpdir(), tmp_file_name);
 	const file_uri = Uri.file(file_path);
-	
-	if(enableFileViewMode === true) {
+
+	if (isEnableFileViewMode() === true) {
 		try {
 			fs.appendFileSync(file_path, "");
 		}
@@ -231,7 +267,7 @@ function execRgCommand(input: string, options?: string[]) {
 		}
 
 		// add to internal manage array
-		genarated_tmp_files.push({reesult_file_path: file_path, search_id: search_id});
+		genarated_tmp_files.push({ reesult_file_path: file_path, search_id: search_id });
 
 		// show result file
 		workspace.openTextDocument(file_uri).then(document => {
@@ -239,7 +275,7 @@ function execRgCommand(input: string, options?: string[]) {
 		});
 	}
 
-	if(enableTreeViewMode === true) {
+	if (isEnabletTreeViewMode() === true) {
 		// add tree to search result
 		searchResultProvider.add(search_id);
 		// show search result view
@@ -263,13 +299,13 @@ function execRgCommand(input: string, options?: string[]) {
 		icon.show();
 
 		// Register procedures on recive output from ripgrep.
-		let error :any = undefined;
+		let error: any = undefined;
 		proc.stdout.on('data', (data) => {
 
 			// STD OUT
 			data = data.toString(); // buf -> string
 
-			if (enableTreeViewMode === true && error === undefined) {
+			if (isEnabletTreeViewMode() === true && error === undefined) {
 				try {
 					// update tree
 					// We don't convert abs path  to rel path here 
@@ -282,7 +318,7 @@ function execRgCommand(input: string, options?: string[]) {
 				}
 			}
 
-			if (enableFileViewMode === true) {
+			if (isEnableFileViewMode() === true) {
 				// convert absolute path to that of relative if necessary.
 				// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
 				// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
@@ -296,11 +332,11 @@ function execRgCommand(input: string, options?: string[]) {
 		});
 
 		proc.stderr.on('data', (data) => {
-	
+
 			// STD ERROR
 			data = data.toString(); // buf -> string
 
-			if (enableTreeViewMode === true && error === undefined) {
+			if (isEnabletTreeViewMode() === true && error === undefined) {
 				try {
 					// update tree
 					// We don't convert abs path  to rel path here 
@@ -313,7 +349,7 @@ function execRgCommand(input: string, options?: string[]) {
 				}
 			}
 
-			if (enableFileViewMode === true) {
+			if (isEnableFileViewMode() === true) {
 				// convert absolute path to that of relative if necessary.
 				// if(workspace.getConfiguration("rg", null).get<boolean>("enableRelativePath")) {
 				// 	data = data.replace(new RegExp((vscode.workspace.workspaceFolders![0]!.uri.fsPath + path.sep).replace(/(\\|\/|\.)/g, "\\$1"), 'g'), "");
@@ -326,7 +362,7 @@ function execRgCommand(input: string, options?: string[]) {
 			}
 		});
 
-		proc.on("exit", () =>{
+		proc.on("exit", () => {
 			icon.dispose();
 		});
 	}
