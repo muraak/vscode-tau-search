@@ -11,7 +11,7 @@ import { appendFile, unlink } from 'fs';
 import * as Moment from 'moment';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
-import { SearchResultProvider, SearchResultTreeItem, SearchResultTree } from "./resultTree";
+import { SearchResultProvider, SearchResultTreeItem } from "./resultTree";
 
 
 let genarated_tmp_files: {reesult_file_path: string, search_id: string}[] = [];
@@ -128,21 +128,25 @@ async function tauTest() {
 		});	
 }
 
+function getHistriesAsQuickPickItem() : vscode.QuickPickItem[] {
+	return genarated_tmp_files
+			.filter((value)=>{ 
+				return fs.existsSync(value.reesult_file_path) && (!isEnabletTreeViewMode() || searchResultProvider.isExistInRoots(value.search_id));
+	 		})
+			.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
+}
+
 async function tauQuickSearch() {
 
 	// set up quickPick
 	let qp = window.createQuickPick();
-	qp.items = genarated_tmp_files
-		.filter((value)=>{ 
-			return fs.existsSync(value.reesult_file_path) && (!isEnabletTreeViewMode() || searchResultProvider.isExistInRoots(value.search_id));
-		 })
-		.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
+	qp.items = getHistriesAsQuickPickItem();
 	// set current selection text as initial value
 	if(window.activeTextEditor) {
 		qp.value =  window.activeTextEditor.document.getText(
 						new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
 	}
-	
+
 	qp.onDidChangeValue((value) =>{
 		qp.items = [{label: value, description: ":current input"}].concat(genarated_tmp_files.map((value) => { 
 			return {label: value.search_id, description: ":history", alwaysShow: true};
@@ -260,18 +264,19 @@ function execRgCommand(input: string, options?: string[]) {
 	const file_path = path.join(tmpdir(), tmp_file_name);
 	const file_uri = Uri.file(file_path);
 
+
+	try {
+		fs.appendFileSync(file_path, "");
+	}
+	catch (e) {
+		vscode.window.showErrorMessage(e.message);
+		return;
+	}
+
+	// add to internal manage array
+	genarated_tmp_files.push({ reesult_file_path: file_path, search_id: search_id });
+
 	if (isEnableFileViewMode() === true) {
-		try {
-			fs.appendFileSync(file_path, "");
-		}
-		catch (e) {
-			vscode.window.showErrorMessage(e.message);
-			return;
-		}
-
-		// add to internal manage array
-		genarated_tmp_files.push({ reesult_file_path: file_path, search_id: search_id });
-
 		// show result file
 		workspace.openTextDocument(file_uri).then(document => {
 			window.showTextDocument(document);
@@ -411,6 +416,12 @@ function showDetailSearchWebView(context: ExtensionContext) {
 			
 			$("#sword").val(select_txt?select_txt:"");
 		}
+
+		getHistriesAsQuickPickItem().forEach((value) => {
+			$("#histories").append($('<option>').html(value.label).val(value.label).text(":history"));
+		});
+
+
 		// bind globe option
 		$("#globe").val(workspace.getConfiguration("tau", null).get<string>("search.default.globe"));
 		// bind raw option
@@ -424,7 +435,12 @@ function showDetailSearchWebView(context: ExtensionContext) {
 		wv_panel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
 				case 'detailSearch':
-					tauDetailSearch(message);
+					if(genarated_tmp_files.findIndex((value) => { return value.search_id === message.sword; }) < 0) {
+						tauDetailSearch(message);
+					}
+					else {
+						showHistory(message.sword);
+					}
 					return;
 			}
 		});
