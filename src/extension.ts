@@ -138,8 +138,11 @@ async function tauQuickSearch() {
 		 })
 		.map((value) => { return {label: value.search_id, description: ":history", alwaysShow: true}; });
 	// set current selection text as initial value
-	qp.value =  window.activeTextEditor!.document.getText(
-					new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
+	if(window.activeTextEditor) {
+		qp.value =  window.activeTextEditor.document.getText(
+						new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
+	}
+	
 	qp.onDidChangeValue((value) =>{
 		qp.items = [{label: value, description: ":current input"}].concat(genarated_tmp_files.map((value) => { 
 			return {label: value.search_id, description: ":history", alwaysShow: true};
