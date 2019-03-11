@@ -7,7 +7,46 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Rg Detail Search</title>
 </head>
+<style type="text/css">
+/* see:https://code.visualstudio.com/api/references/theme-color */
 
+input, textarea{
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    /*border-color: var(--vscode-input-border);*/
+    /*border: 1px solid;*/
+    border: none;
+    
+}
+
+::placeholder{
+  color: var(--vscode-input-placeholderForeground);
+}
+
+textarea {
+    font-family: sans-serif;
+}
+
+/* button */
+button {
+    width: 56px;
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+body {
+    margin-left: 0px;
+}
+</style>
 <body>
     <div style="margin-left:30px;margin-top: 30px;">
         <table>
@@ -19,6 +58,14 @@
                     <input type="text" id="sword" style="width:200px; height: 20px;" list="histories">
                     <datalist id="histories">
                     </datalist>
+                </td>
+                <td>
+                    <input type="checkbox" id="match-case"/>
+                    <label for="match-case">Match Case</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="regexp"/>
+                    <label for="regexp">Use Regular Expression</label>
                 </td>
             <tr>
                 <td>include or exclude files or folders:</td>
@@ -45,16 +92,30 @@
             const sword = document.getElementById('sword');
             const globe = document.getElementById('globe');
             const raw   = document.getElementById('raw');
+            const matchCase = document.getElementById('match-case');
+            const regexp = document.getElementById('regexp');
 
             document.getElementById('sbt').onclick = function()
             {
+                execSearch();
+            };
+
+            document.getElementById('sword').onkeydown = function(){
+                if(event.keyCode == 13) {
+                    execSearch();
+                }
+            };
+
+            function execSearch() {
                 vscode.postMessage({
                     command: "detailSearch",
                     sword: sword.value,
                     globe: globe.value,
-                    raw: raw.value
+                    raw: raw.value,
+                    matchCase: matchCase.checked,
+                    regexp: regexp.checked
                 });
-            };
+            }
         }())
     </script>
 </body>

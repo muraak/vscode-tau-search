@@ -12,6 +12,7 @@ import * as Moment from 'moment';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { SearchResultProvider, SearchResultTreeItem } from "./resultTree";
+import { isBoolean } from 'util';
 
 
 let genarated_tmp_files: {reesult_file_path: string, search_id: string}[] = [];
@@ -229,6 +230,20 @@ function tauDetailSearch(options_obj: any) {
 				else {
 					options = raw.split(/\s|\n/g);
 				}
+			}
+		}
+
+		let matchCase = options_obj.matchCase;
+		if(isBoolean(matchCase)) {
+			if(matchCase === true) {	
+				options = (options) ? options.concat(["--case-sensitive"]) : ["--case-sensitive"];
+			}
+		}
+
+		let regexp = options_obj.regexp;
+		if(isBoolean(regexp)) {
+			if(regexp === false) {	
+				options = (options) ? options.concat(["--fixed-strings"]) : ["--fixed-strings"];
 			}
 		}
 
