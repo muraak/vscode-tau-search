@@ -178,11 +178,15 @@ function showHistory(search_id: string) :boolean {
 
 	let succeed = true;
 
+	if(wv_panel) {
+		wv_panel.dispose();
+	}
+
 	if (isEnableFileViewMode()) {
 		let tgt_file = genarated_tmp_files.find((value) => { return search_id === value.search_id; });
 		if (tgt_file) {
 			workspace.openTextDocument(Uri.file(tgt_file.reesult_file_path)).then(document => {
-				window.showTextDocument(document);
+				window.showTextDocument(document, ViewColumn.One);
 			});
 		}
 		else {
@@ -417,7 +421,7 @@ function showDetailSearchWebView(context: ExtensionContext) {
 	else {
 		// create and show webview panel
 		wv_panel = window.createWebviewPanel(
-			"tauDetailSearch", "Tau Detail Search", ViewColumn.Beside, { enableScripts: true });
+			"tauDetailSearch", "Tau Detail Search", ViewColumn.Two, { enableScripts: true });
 		
 		// bind variables to html elements
 		const cheerio = require('cheerio');
