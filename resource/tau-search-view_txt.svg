@@ -15,7 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="tau-search-view_emb.svg">
+   sodipodi:docname="tau-search-view.svg">
   <defs
      id="defs2">
     <style
@@ -2031,10 +2031,10 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="1.2060174"
+     inkscape:cx="16.964946"
      inkscape:cy="17.704633"
      inkscape:document-units="mm"
-     inkscape:current-layer="text4838"
+     inkscape:current-layer="svg8"
      showgrid="false"
      inkscape:window-width="1366"
      inkscape:window-height="655"
@@ -2156,14 +2156,16 @@
      transform="matrix(0.96672003,0,0,1.0344257,0.10079365,-0.10079365)"
      style="font-style:normal;font-weight:normal;font-size:4.37578344px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f6f6f6;fill-opacity:1;stroke:none;stroke-width:0.10956686;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="text4838">
-    <g
-       transform="scale(1.0344257,0.96671999)"
+    <text
+       xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:1.25;font-family:STIXGeneral;-inkscape-font-specification:STIXGeneral;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.029;stroke-miterlimit:4;stroke-dasharray:0.0145, 0.0145;stroke-dashoffset:0;stroke-opacity:1"
-       id="text1165">
-      <path
-         d="m 4.8718968,1.8382769 0,-0.4148667 -1.3828889,0 c -0.4741334,0 -0.7260167,0.5284611 -0.7852834,0.8593667 l 0.074083,0 c 0.0889,-0.2667 0.2913944,-0.4445 0.5630333,-0.4445 l 0.4049889,0 C 3.661869,2.1197936 3.5482746,2.5642936 3.5482746,2.944588 c 0,0.3704167 0.1086555,0.7507112 0.5087055,0.7507112 0.3259667,0 0.5383389,-0.3654778 0.5383389,-0.7556501 l -0.074083,0 c -0.04445,0.22225 -0.1778,0.3457223 -0.3407834,0.3457223 -0.2024944,0 -0.2617611,-0.2469445 -0.2617611,-0.5383389 0,-0.3556 0.0889,-0.7754056 0.1135945,-0.9087556 l 0.8396111,0 z"
-         style=""
-         id="path4485" />
-    </g>
+       x="2.6889079"
+       y="3.6459103"
+       id="text1165"
+       transform="scale(1.0344257,0.96671999)"><tspan
+         sodipodi:role="line"
+         id="tspan4484"
+         x="2.6889079"
+         y="3.6459103">τ</tspan></text>
   </g>
 </svg>
