@@ -98,9 +98,10 @@
                 "tau.search.encoding": {
                     "scope": "resource",
                     "type": "string",
-                    "default": "utf-8",
+                    "default": "auto",
                     "description": "Specify the text encoding for searcing.(this option conforms to \"-E\" option of ripgrep(see: https://www.mankier.com/1/rg))",
                     "enum": [
+                        "auto",
                         "unicode-1-1-utf-8",
                         "utf-8",
                         "utf8",
