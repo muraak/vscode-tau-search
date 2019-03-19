@@ -46,8 +46,25 @@ button:hover {
 body {
     margin-left: 0px;
 }
+.autocomplete {
+    width: 56px;
+    margin-top: 0px;
+    position: absolute;
+    z-index: 10;
+    background-color: var(--vscode-list-dropBackground);
+    display: none;
+}
+.autocomplete-item{
+    text-align: right;
+}
+.autocomplete-item-elem{
+    display: inline;
+}
+.autocomplete-item-label{
+    float: left;
+}
 </style>
-<body>
+<body id='body'>
     <div style="margin-left:30px;margin-top: 30px;">
         <table>
             <tr>
@@ -55,7 +72,11 @@ body {
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="sword" style="width:200px; height: 20px;" list="histories">
+                    <div id="sword-area">
+                        <input class='act' type="text" id="sword" style="width:200px; height: 20px;">
+                        <div class='act autocomplete'>
+                        </div>
+                    </div>
                     <datalist id="histories">
                     </datalist>
                 </td>
@@ -121,6 +142,77 @@ body {
                     regexp: regexp.checked
                 });
             }
+
+            sword.onkeydown = function(){
+                // see https://keycode.info/
+                if(event.keyCode == 40) {
+                    sword.blur();
+                    document.getElementsByClassName('autocomplete')[0].setAttribute("style", 'display: block; width: ' + sword.clientWidth.toString() + 'px;');
+                    document.getElementsByClassName('autocomplete-item')[0].focus();
+                }
+                else if(event.keyCode == 38) {
+                    sword.blur();
+                    document.getElementsByClassName('autocomplete')[0].setAttribute("style", 'display: block; width: ' + sword.clientWidth.toString() + 'px;');
+                    document.getElementsByClassName('autocomplete-item')[ document.getElementsByClassName('autocomplete-item').length - 1].focus();
+                }
+                else if(event.keyCode == 13) {
+                    execSearch();
+                }
+            };
+            sword.onfocus = function(){
+                document.getElementsByClassName('autocomplete')[0].setAttribute("style", 'display: block; width: ' + sword.clientWidth.toString() + 'px;');
+            };
+            sword.onblur = function(){
+                document.getElementsByClassName('autocomplete')[0].removeAttribute("style");
+            };
+             // Handle the message inside the webview
+            window.addEventListener('message', event => {
+                console.log('test');
+                Array.prototype.forEach.call(event.data.histories, function(elem, idx){
+                    var label = '<div class="autocomplete-item-elem autocomplete-item-label">' + elem.label + '</div>';
+                    var description = "<div class='autocomplete-item-elem autocomplete-item-description'>" + elem.description + "</div>";
+                    var autocomplete_item = "<div class='act autocomplete-item' tabindex=" + 1000 + idx + ">"
+                        + label + description
+                        + "</div>";
+                    document.getElementsByClassName('autocomplete')[0].innerHTML += autocomplete_item;
+                });
+                Array.prototype.forEach.call(document.getElementsByClassName('autocomplete-item'), function (element, idx) {
+                    element.onkeydown = function (event) {
+                        if (event.keyCode == 40) {
+                            element.blur();
+                            document.getElementsByClassName('autocomplete')[0].setAttribute("style", 'display: block; width: ' + sword.clientWidth.toString() + 'px;');
+                            if (idx + 1 < document.getElementsByClassName('autocomplete-item').length) {
+                                document.getElementsByClassName('autocomplete-item')[idx + 1].focus();
+                            }
+                            else {
+                                sword.focus();
+                            }
+                        }
+                        else if (event.keyCode == 38) {
+                            element.blur();
+                            document.getElementsByClassName('autocomplete')[0].setAttribute("style", 'display: block; width: ' + sword.clientWidth.toString() + 'px;');
+                            if (idx - 1 < 0) {
+                                sword.focus();
+                            }
+                            else {
+                                document.getElementsByClassName('autocomplete-item')[idx - 1].focus();
+                            }
+                        }
+                        else if(event.keyCode == 13) {
+                            vscode.postMessage({
+                                command: "showHistory",
+                                id: element.getElementsByClassName("autocomplete-item-label")[0].innerText
+                            });
+                        }
+                        else {
+                            sword.focus();
+                        }
+                    }
+                    element.onblur = function () {
+                        document.getElementsByClassName('autocomplete')[0].removeAttribute("style");
+                    }
+                });
+            });
         }())
     </script>
 </body>

@@ -14,7 +14,6 @@ import * as iconv from 'iconv-lite';
 import { SearchResultProvider, SearchResultTreeItem } from "./resultTree";
 import { isBoolean } from 'util';
 
-
 let genarated_tmp_files: {reesult_file_path: string, search_id: string}[] = [];
 let searchResultProvider = new SearchResultProvider();
 let treeView : vscode.TreeView<SearchResultTreeItem>;
@@ -445,7 +444,6 @@ function showDetailSearchWebView(context: ExtensionContext) {
 		$("#globe").val(workspace.getConfiguration("tau", null).get<string>("search.default.globe"));
 		// bind raw option
 		$("#raw").val(workspace.getConfiguration("tau", null).get<string>("search.default.raw"));
-
 		
 		// set html to webview
 		wv_panel.webview.html =$.html();
@@ -461,6 +459,9 @@ function showDetailSearchWebView(context: ExtensionContext) {
 						showHistory(message.sword);
 					}
 					return;
+				case 'showHistory':
+					showHistory(message.id);
+					return;
 			}
 		});
 
@@ -468,6 +469,8 @@ function showDetailSearchWebView(context: ExtensionContext) {
 		wv_panel.onDidDispose(() => {
 			wv_panel = undefined;
 		});
+
+		wv_panel.webview.postMessage({histories: getHistriesAsQuickPickItem()});
 	}
 }
 

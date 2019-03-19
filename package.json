@@ -580,6 +580,7 @@
         "vscode": "^1.1.29"
     },
     "dependencies": {
+        "autocompleter": "^4.0.2",
         "cheerio": "^1.0.0-rc.2",
         "date-utils": "^1.2.21",
         "iconv-lite": "^0.4.24",
