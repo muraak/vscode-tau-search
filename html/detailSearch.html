@@ -10,13 +10,18 @@
 <style type="text/css">
 /* see:https://code.visualstudio.com/api/references/theme-color */
 
-input, textarea{
+input[type="text"], textarea{
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
     /*border-color: var(--vscode-input-border);*/
     /*border: 1px solid;*/
     border: none;
-    
+    width:80%; 
+    height: 20px;
+}
+
+table {
+    width: 100%;
 }
 
 ::placeholder{
@@ -25,6 +30,7 @@ input, textarea{
 
 textarea {
     font-family: sans-serif;
+    height: 100px;
 }
 
 /* button */
@@ -47,7 +53,7 @@ body {
     margin-left: 0px;
 }
 .autocomplete {
-    width: 56px;
+    /* width: 80%; */
     margin-top: 0px;
     position: absolute;
     z-index: 10;
@@ -56,6 +62,10 @@ body {
 }
 .autocomplete-item{
     text-align: right;
+}
+.autocomplete-item:hover{
+    cursor:pointer;
+    background-color: var(--vscode-list-activeSelectionBackground);
 }
 .autocomplete-item-elem{
     display: inline;
@@ -73,7 +83,7 @@ body {
             <tr>
                 <td>
                     <div id="sword-area">
-                        <input class='act' type="text" id="sword" style="width:200px; height: 20px;">
+                        <input class='act' type="text" id="sword">
                         <div class='act autocomplete'>
                         </div>
                     </div>
@@ -97,13 +107,13 @@ body {
                 <td>include or exclude files or folders:</td>
             </tr>
             <tr>
-                <td><input type="text" id="globe" style="width:200px; height: 20px;" placeholder="*.c, *.h, !*.o, src/, !bin"></td>
+                <td><input type="text" id="globe" placeholder="*.c, *.h, !*.o, src/, !bin"></td>
             </tr>
             <tr>
                 <td>
                     <details>
                         <summary>Set options manualy:</summary>
-                        <textarea id="raw" style="width: 200%; height: 100px;"></textarea>
+                        <textarea id="raw"></textarea>
                     </details>
                 </td>
             </tr>
@@ -167,7 +177,7 @@ body {
             };
              // Handle the message inside the webview
             window.addEventListener('message', event => {
-                // console.log('test');
+                console.log('test');
                 Array.prototype.forEach.call(event.data.histories, function(elem, idx){
                     var label = '<div class="autocomplete-item-elem autocomplete-item-label">' + elem.label + '</div>';
                     var description = "<div class='autocomplete-item-elem autocomplete-item-description'>" + elem.description + "</div>";
@@ -210,6 +220,17 @@ body {
                     }
                     element.onblur = function () {
                         document.getElementsByClassName('autocomplete')[0].removeAttribute("style");
+                    }
+                    element.onmouseover = function() {
+                        sword.blur();
+                        document.getElementsByClassName('autocomplete')[0].setAttribute("style", 'display: block; width: ' + sword.clientWidth.toString() + 'px;');
+                        document.getElementsByClassName('autocomplete-item')[idx].focus();
+                    }
+                    element.onclick = function () {
+                        vscode.postMessage({
+                            command: "showHistory",
+                            id: element.getElementsByClassName("autocomplete-item-label")[0].innerText
+                        });
                     }
                 });
             });
