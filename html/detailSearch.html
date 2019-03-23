@@ -167,7 +167,7 @@ body {
             };
              // Handle the message inside the webview
             window.addEventListener('message', event => {
-                console.log('test');
+                // console.log('test');
                 Array.prototype.forEach.call(event.data.histories, function(elem, idx){
                     var label = '<div class="autocomplete-item-elem autocomplete-item-label">' + elem.label + '</div>';
                     var description = "<div class='autocomplete-item-elem autocomplete-item-description'>" + elem.description + "</div>";
