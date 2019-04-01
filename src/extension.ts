@@ -148,11 +148,16 @@ async function tauQuickSearch() {
 						new Range(window.activeTextEditor!.selection.start, window.activeTextEditor!.selection.end));
 	}
 
+	if(qp.value !== '') {
+		qp.items = [{label: qp.value, description: ':current input'}];
+	}
+
 	qp.onDidChangeValue((value) =>{
 		qp.items = [{label: value, description: ":current input"}].concat(genarated_tmp_files.map((value) => { 
 			return {label: value.search_id, description: ":history", alwaysShow: true};
 		}));
 	});
+	
 	qp.onDidAccept(() =>{
 		if(qp.selectedItems[0].description === ":history") {
 			// show result file that is already exist.
