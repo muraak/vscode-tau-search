@@ -285,7 +285,7 @@ function execRgCommand(input: string, options?: string[]) {
 
 	const search_id = getSearchId(input);
 	const tmp_file_name = getTmpFileName(input);
-	const file_path = path.join(tmpdir(), tmp_file_name);
+	const file_path = path.join(tmpdir(), tmp_file_name.replace(/[^a-zA-Z0-9-_\.]/g, '_'));
 	const file_uri = Uri.file(file_path);
 
 
